@@ -1,0 +1,53 @@
+New request was made on 26/8/2024, 4:03:01 pm
+New request was made on 26/8/2024, 4:04:03 pm
+New request was made on 26/8/2024, 4:04:28 pm
+New request was made on 26/8/2024, 4:04:30 pm
+New request was made on 26/8/2024, 4:06:39 pm
+New request was made on 26/8/2024, 4:09:23 pm and was made on the url /id
+New request was made on 26/8/2024, 4:58:12 pm and was made on the url /id
+New request was made on 26/8/2024, 4:59:20 pm and was made on the url /?myname:hrishikesh
+New request was made on 26/8/2024, 5:02:14 pm and was made on the url /?myname:hrishikesh
+New request was made on 26/8/2024, 5:28:53 pm and was made on the url /?myname:hrishikesh
+New request was made on 26/8/2024, 5:29:13 pm and was made on the url /?myname:hrishikesh
+New request was made on 26/8/2024, 5:30:32 pm and was made on the url /?myname:hrishikesh&&myage:21
+New request was made on 26/8/2024, 5:30:59 pm and was made on the url /?myname:hrishikesh&&myage:21
+New request was made on 26/8/2024, 5:31:09 pm and was made on the url /?myname:hrishikesh&&myage:21
+New request was made on 26/8/2024, 5:31:40 pm and was made on the url /?myname:hrishikesh&&myage:21
+New request was made on 27/8/2024, 1:14:07 pm and was made on the url /
+New request was made on 27/8/2024, 1:14:23 pm and was made on the url /patients
+New request was made on 27/8/2024, 1:16:22 pm and was made on the url /patients
+New request was made on 27/8/2024, 1:17:03 pm and was made on the url /patients/1
+New request was made on 27/8/2024, 1:17:41 pm and was made on the url /patients
+New request was made on 27/8/2024, 1:18:22 pm and was made on the url /patients
+
+// // const { Sequelize } = require("sequelize");
+
+// // const sequelize = new Sequelize("hospitalMgmSystem", "postgres", "rootuser", {
+// //   host: "localhost",
+// //   dialect: "postgres",
+// // });
+
+// module.exports = {
+//   developement: {
+//     username: "postgres",
+//     password: "rootuser",
+//     database: "hostpitalMgmSystem",
+//     host: "localhost",
+//     dialect: "postgres",
+//   },
+//   test: {
+//     username: "postgres",
+//     password: "rootuser",
+//     database: "hostpitalMgmSystem",
+//     host: "localhost",
+//     dialect: "postgres",
+//   },
+//   production: {
+//     username: "postgres",
+//     password: "rootuser",
+//     database: "hostpitalMgmSystem",
+//     host: "localhost",
+//     dialect: "postgres",
+//   },
+// };
+
