@@ -5,6 +5,7 @@ const {
   updatePatient,
   deletePatient,
   findPatientById,
+  getDeletedPatients,
 } = require("../controllers/patientController.js");
 
 const router = express.Router();
@@ -23,5 +24,8 @@ router.put("/:patientId", updatePatient);
 
 // Delete a patient by ID
 router.delete("/:patientId", deletePatient);
+
+//find Deleted patients
+router.get("/deleted", getDeletedPatients);
 
 module.exports = router;

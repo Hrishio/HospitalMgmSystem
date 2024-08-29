@@ -256,18 +256,65 @@ const createPatientModel = async (sequelize) => {
       paranoid: true, // Enable soft deletion
     }
   );
+  const PatientDepartment = sequelize.define("PatientDepartment", {
+    patientId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Patients,
+        key: "patientId",
+      },
+    },
+    departmentId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: Department,
+        key: "deptId",
+      },
+    },
+  });
+
   // Define relationships between models
   Employee.belongsTo(Patients, { foreignKey: "patientId" });
   Patients.hasMany(Employee, { foreignKey: "patientId" });
   Patients.hasMany(Medicines, { foreignKey: "patientId" });
   Patients.hasMany(Appointment, { foreignKey: "patientId" });
   Patients.hasMany(Department, { foreignKey: "patientId" });
+  Patients.belongsToMany(Department, {
+    through: PatientDepartment,
+    foreignKey: "patientId",
+  });
+  Department.belongsToMany(Patients, {
+    through: PatientDepartment,
+    foreignKey: "departmentId",
+  });
+  Employee.hasMany(Appointment, { foreignKey: "employeeId" });
+  Appointment.belongsTo(Employee, { foreignKey: "employeeId" });
+  Medicines.belongsTo(Department, { foreignKey: "departmentId" });
+  Department.hasMany(Medicines, { foreignKey: "departmentId" });
+  Employee.belongsTo(Department, { foreignKey: "departmentId" });
+  Department.hasMany(Employee, { foreignKey: "departmentId" });
+
+  Patients.belongsToMany(Department, {
+    through: PatientDepartment,
+    foreignKey: "patientId",
+  });
+  Department.belongsToMany(Patient, {
+    through: PatientDepartment,
+    foreignKey: "departmentId",
+  });
 
   // Synchronize all models with the database
   await sequelize.sync();
 
   // Return the models
-  return { Patients, Employee, Department, Medicines, Appointment };
+  return {
+    Patients,
+    Employee,
+    Department,
+    Medicines,
+    Appointment,
+    PatientDepartment,
+  };
 };
 
 module.exports = { createPatientModel };

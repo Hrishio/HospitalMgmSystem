@@ -140,6 +140,23 @@ exports.findPatientById = async (req, res) => {
   }
 };
 
+//Find deleted patients
+exports.getDeletedPatients = async (req, res) => {
+  const { connection, getSchemaModel } = require("../../database.js");
+  const SchemaModel = getSchemaModel();
+  try {
+    const patient = await SchemaModel.Patients.findAll({
+      where: { deletedAt: null },
+    });
+    if (patient == null) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    return res.status(200).json({ message: "Found", patient });
+  } catch (error) {
+    res.status(404).josn({ message: "Not deleted already ?!!!" });
+  }
+};
+
 /*
 This logic is for refrence of how to use deletedAt field in industry level.
 
