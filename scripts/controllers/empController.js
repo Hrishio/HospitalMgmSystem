@@ -1,4 +1,4 @@
-const patientService = require("../services/patientService.js");
+const employeeService = require("../services/employeeService.js");
 
 const {
   CREATE_USER_ERROR,
@@ -16,11 +16,12 @@ const {
 } = require("../constants/statusCodes.js");
 
 //Create new patient:
-exports.createPatient = async (req, res) => {
+exports.createEmployee = async (req, res) => {
   try {
     // Create a new patient entry
-    const patient = await patientService.createPatient(req.body);
-    res.status(CREATED).json({ message: "Patient Added", patient });
+    console.log("body : ", req.body);
+    const employee = await employeeService.createEmployee(req.body);
+    res.status(CREATED).json({ message: "Employee Added", employee });
   } catch (error) {
     console.log(error);
     res.status(SERVER_ERROR).json({ error: CREATE_USER_ERROR });
@@ -28,14 +29,14 @@ exports.createPatient = async (req, res) => {
 };
 
 //GetAll patients.
-exports.getAllPatients = async (req, res) => {
+exports.getAllEmployees = async (req, res) => {
   try {
-    const allPatients = await patientService.getAllPatients();
-    res.status(OK).json({ message: "Found", allPatients });
+    const allEmp = await employeeService.getAllEmployee();
+    res.status(OK).json({ message: "Found", allEmp });
 
     // Fetch all patients
 
-    if (!allPatients.length) {
+    if (!allEmp.length) {
       return res.status(NOT_FOUND).json({ error: GET_USER_ERROR });
     }
   } catch (error) {
@@ -46,17 +47,17 @@ exports.getAllPatients = async (req, res) => {
 
 //Get [patient by ID]:
 
-exports.updatePatient = async (req, res) => {
-  let patientId = req.params.patientId;
+exports.updateEmployee = async (req, res) => {
+  let empId = req.params.empId;
   try {
     console.log(req.body);
-    const patient = await patientService.updatePatient(patientId, req.body);
-    if (!patient) {
+    const employee = await employeeService.updateEmployee(empId, req.body);
+    if (!employee) {
       res.status(NOT_FOUND).json({ Error: UPDATE_USER_ERROR });
     }
     return res
       .status(CREATED)
-      .json({ message: "Updated Successfuly", patient });
+      .json({ message: "Updated Successfuly", employee });
   } catch (error) {
     console.log("Error : ", error);
     res.status(SERVER_ERROR).json({ Error: UPDATE_USER_ERROR });
@@ -65,12 +66,12 @@ exports.updatePatient = async (req, res) => {
 
 //Delete Patient:
 
-exports.deletePatient = async (req, res) => {
-  let patientId = req.params.patientId;
+exports.deleteEmpById = async (req, res) => {
+  let empId = req.params.empId;
 
   try {
-    const patient = await patientService.deletePatientById(patientId);
-    if (patient == null) {
+    const employee = await employeeService.deleteEmpById(empId);
+    if (employee == null) {
       return res.status(NOT_FOUND).json({ message: DELETE_USER_ERROR });
     }
     return res.status(OK).json({ message: "Deleted Successfuly" });
@@ -80,25 +81,25 @@ exports.deletePatient = async (req, res) => {
 };
 
 //Find Patient by ID:
-exports.findPatientById = async (req, res) => {
-  let patientId = req.params.patientId;
-  console.log("patientId : ", patientId);
+exports.getEmpById = async (req, res) => {
+  let empId = req.params.empId;
+  console.log("patientId : ", empId);
   try {
-    const patient = await patientService.getPatientById(patientId);
-    if (patient == null) {
+    const employee = await employeeService.getEmpById(empId);
+    if (employee == null) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
-    return res.status(OK).json({ message: "Found Patient", patient });
+    return res.status(OK).json({ message: "Found Patient", employee });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: USER_NOT_FOUND });
   }
 };
 
 //Find deleted patients
-exports.getDeletedPatients = async (req, res) => {
+exports.getDeletedEmp = async (req, res) => {
   try {
-    const deletedPatients = await patientService.getDeletedPatients();
-    if (!deletedPatients.length) {
+    const deletedEmp = await employeeService.getDeletedEmp();
+    if (!deletedEmp.length) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
   } catch (error) {
