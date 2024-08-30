@@ -1,159 +1,108 @@
+const patientService = require("../services/patientService.js");
+
+const {
+  CREATE_PATIENT_ERROR,
+  GET_PATIENTS_ERROR,
+  UPDATE_PATIENTS_ERROR,
+  DELETE_PATIENTS_ERROR,
+  PATIENT_NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = require("../constants/errorMessages.js");
+const {
+  SERVER_ERROR,
+  CREATED,
+  OK,
+  NOT_FOUND,
+} = require("../constants/statusCodes.js");
+
 //Create new patient:
 exports.createPatient = async (req, res) => {
-  const { connection, getSchemaModel } = require("../../database.js");
-  const SchemaModel = getSchemaModel();
-  const {
-    first_name,
-    last_name,
-    gender,
-    address,
-    email,
-    dob,
-    phone_number,
-    employee_id,
-    createdBy,
-    updatedBy,
-  } = req.body;
-  console.log("Request body:", req.body);
   try {
-    // Check if SchemaModel is available
-    if (!SchemaModel) {
-      return res.status(500).json({ error: "Database model not found" });
-    }
-    if (
-      !first_name ||
-      !last_name ||
-      !gender ||
-      !address ||
-      !email ||
-      !dob ||
-      !phone_number ||
-      !employee_id ||
-      !createdBy ||
-      !updatedBy
-    ) {
-      return res.status(400).json({ error: "Missing required fields" });
-    }
-
     // Create a new patient entry
-    const patient = await SchemaModel.Patients.create({
-      first_name,
-      last_name,
-      gender,
-      address,
-      email,
-      dob,
-      phone_number,
-      employee_id,
-      createdBy,
-      updatedBy,
-    });
-
-    return res.status(201).json({ message: "Patient Added", patient });
+    const patient = await patientService.createPatient(req.body);
+    res.status(CREATED).json({ message: "Patient Added", patient });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(SERVER_ERROR).json({ error: CREATE_PATIENT_ERROR });
   }
 };
 
 //GetAll patients.
 exports.getAllPatients = async (req, res) => {
-  const { connection, getSchemaModel } = require("../../database.js");
-  const SchemaModel = getSchemaModel();
   try {
-    // Check if SchemaModel is available
-    if (!SchemaModel) {
-      return res.status(500).json({ error: "Database model not found" });
-    }
+    const allPatients = await patientService.getAllPatients();
+    res.status(OK).json({ message: "Found", allPatients });
 
     // Fetch all patients
-    const allPatients = await SchemaModel.Patients.findAll();
-    if (!allPatients.length) {
-      return res.status(404).json({ error: "Patients not found" });
-    }
 
-    return res.status(200).json(allPatients);
+    if (!allPatients.length) {
+      return res.status(NOT_FOUND).json({ error: GET_PATIENTS_ERROR });
+    }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(SERVER_ERROR).json({ error: GET_PATIENTS_ERROR });
   }
 };
 
 //Get [patient by ID]:
 
 exports.updatePatient = async (req, res) => {
-  const { connection, getSchemaModel } = require("../../database.js");
-  const SchemaModel = getSchemaModel();
   let patientId = req.params.patientId;
   try {
     console.log(req.body);
-    const patient = await SchemaModel.Patients.update(req.body, {
-      where: { patientId },
-    });
-    if (patient[0] === 0) {
-      res.status(404).json({ Error: "Patient Not found" });
+    const patient = await patientService.updatePatient(patientId, req.body);
+    if (!patient) {
+      res.status(NOT_FOUND).json({ Error: UPDATE_PATIENTS_ERROR });
     }
-    return res.status(201).json({ message: "Updated Successfuly", patient });
+    return res
+      .status(CREATED)
+      .json({ message: "Updated Successfuly", patient });
   } catch (error) {
     console.log("Error : ", error);
-    res.status(404).json({ Error: "Internal Server Error" });
+    res.status(SERVER_ERROR).json({ Error: UPDATE_PATIENTS_ERROR });
   }
 };
 
 //Delete Patient:
 
 exports.deletePatient = async (req, res) => {
-  const { connection, getSchemaModel } = require("../../database.js");
-  const SchemaModel = getSchemaModel();
   let patientId = req.params.patientId;
 
   try {
-    const patient = await SchemaModel.Patients.findOne({
-      where: { patientId: req.params.patientId },
-    });
+    const patient = await patientService.deletePatientById(patientId);
     if (patient == null) {
-      return res.status(404).json({ message: "Not found" });
+      return res.status(NOT_FOUND).json({ message: DELETE_PATIENTS_ERROR });
     }
-    await patient.destroy();
-    return res.status(200).json({ message: "Deleted Successfuly" });
+    return res.status(OK).json({ message: "Deleted Successfuly" });
   } catch (error) {
-    res.status(404).json({ message: "Internal Server Error" });
+    res.status(SERVER_ERROR).json({ message: DELETE_PATIENTS_ERROR });
   }
 };
 
 //Find Patient by ID:
 exports.findPatientById = async (req, res) => {
-  const { connection, getSchemaModel } = require("../../database.js");
-  const SchemaModel = getSchemaModel();
   let patientId = req.params.patientId;
-
+  console.log("patientId : ", patientId);
   try {
-    const patient = await SchemaModel.Patients.findOne({
-      where: { patientId: patientId },
-    });
+    const patient = await patientService.getPatientById(patientId);
     if (patient == null) {
-      return res.status(404).json({ message: "Not found" });
+      return res.status(NOT_FOUND).json({ message: PATIENT_NOT_FOUND });
     }
-    return res.status(200).json({ message: "Found Patient", patient });
+    return res.status(OK).json({ message: "Found Patient", patient });
   } catch (error) {
-    res.status(404).json({ message: "Patient with mentioned Id is not found" });
+    res.status(SERVER_ERROR).json({ message: PATIENT_NOT_FOUND });
   }
 };
 
 //Find deleted patients
 exports.getDeletedPatients = async (req, res) => {
-  const { connection, getSchemaModel } = require("../../database.js");
-  const SchemaModel = getSchemaModel();
   try {
-    const patient = await SchemaModel.Patients.findAll({
-      where: { deletedAt: null },
-    });
-    if (patient == null) {
-      return res.status(404).json({ message: "Not found" });
+    const deletedPatients = await patientService.getDeletedPatients();
+    if (!deletedPatients.length) {
+      return res.status(NOT_FOUND).json({ message: PATIENT_NOT_FOUND });
     }
-    return res.status(200).json({ message: "Found", patient });
   } catch (error) {
-    res.status(404).josn({ message: "Not deleted already ?!!!" });
+    res.status(SERVER_ERROR).json({ message: INTERNAL_SERVER_ERROR });
   }
 };
 

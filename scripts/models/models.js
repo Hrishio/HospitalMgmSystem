@@ -285,22 +285,39 @@ const createPatientModel = async (sequelize) => {
   });
   Department.belongsToMany(Patients, {
     through: PatientDepartment,
-    foreignKey: "departmentId",
+    foreignKey: "deptId",
   });
-  Employee.hasMany(Appointment, { foreignKey: "employeeId" });
-  Appointment.belongsTo(Employee, { foreignKey: "employeeId" });
-  Medicines.belongsTo(Department, { foreignKey: "departmentId" });
-  Department.hasMany(Medicines, { foreignKey: "departmentId" });
-  Employee.belongsTo(Department, { foreignKey: "departmentId" });
-  Department.hasMany(Employee, { foreignKey: "departmentId" });
+  Employee.hasMany(Appointment, { foreignKey: "empId" });
+  Appointment.belongsTo(Employee, { foreignKey: "empId" });
+  Medicines.belongsTo(Department, { foreignKey: "deptId" });
+  Department.hasMany(Medicines, { foreignKey: "deptId" });
+  Employee.belongsTo(Department, { foreignKey: "deptId" });
+  Department.hasMany(Employee, { foreignKey: "deptId" });
 
   Patients.belongsToMany(Department, {
     through: PatientDepartment,
     foreignKey: "patientId",
   });
-  Department.belongsToMany(Patient, {
+  Department.belongsToMany(Patients, {
     through: PatientDepartment,
-    foreignKey: "departmentId",
+    foreignKey: "deptId",
+  });
+  Employee.belongsToMany(Department, {
+    through: "EmployeeDepartments",
+    foreignKey: "empId",
+  });
+  Department.belongsToMany(Employee, {
+    through: "EmployeeDepartments",
+    foreignKey: "deptId",
+  });
+
+  Appointment.belongsToMany(Department, {
+    through: "AppointmentDepartments",
+    foreignKey: "appId",
+  });
+  Department.belongsToMany(Appointment, {
+    through: "AppointmentDepartments",
+    foreignKey: "deptId",
   });
 
   // Synchronize all models with the database

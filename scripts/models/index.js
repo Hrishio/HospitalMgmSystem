@@ -1,15 +1,50 @@
 const { Sequelize } = require("sequelize");
+const PatientsModel = require("./models.js");
+const DepartmentModel = require("./models.js");
+const MedicinesModel = require("./models.js");
+const AppointmentModel = require("./models.js");
+const PatientMedicinesModel = require("./patientMedicines");
+const PatientDepartmentModel = require("./patientDepartment");
+
 const sequelize = new Sequelize("hospitalMgmSystem", "postgres", "rootuser", {
   host: "localhost",
   dialect: "postgres",
 });
 
-const db = {};
+const Patients = PatientsModel(sequelize);
+const Department = DepartmentModel(sequelize);
+const Medicines = MedicinesModel(sequelize);
+const Appointment = AppointmentModel(sequelize);
+const PatientMedicines = PatientMedicinesModel(sequelize);
+const PatientDepartment = PatientDepartmentModel(sequelize);
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+// Set up associations
+Patients.belongsToMany(Department, {
+  through: PatientDepartment,
+  foreignKey: "patientId",
+});
+Department.belongsToMany(Patients, {
+  through: PatientDepartment,
+  foreignKey: "departmentId",
+});
 
-// Import models
-db.PatientNames = require("./models")(sequelize, Sequelize);
+Patients.belongsToMany(Medicines, {
+  through: PatientMedicines,
+  foreignKey: "patientId",
+});
+Medicines.belongsToMany(Patients, {
+  through: PatientMedicines,
+  foreignKey: "medId",
+});
 
-module.exports = db;
+// Other associations if needed
+
+module.exports = {
+  sequelize,
+  Patients,
+  Department,
+  Medicines,
+  Appointment,
+  PatientMedicines,
+  PatientDepartment,
+};

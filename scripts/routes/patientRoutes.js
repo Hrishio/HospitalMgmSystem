@@ -16,6 +16,9 @@ router.get("/", getAllPatients);
 //Create Patient.
 router.post("/new", createPatient);
 
+//find Deleted patients
+router.get("/deleted", getDeletedPatients);
+
 // Get a specific patient by ID
 router.get("/:patientId", findPatientById);
 
@@ -24,8 +27,5 @@ router.put("/:patientId", updatePatient);
 
 // Delete a patient by ID
 router.delete("/:patientId", deletePatient);
-
-//find Deleted patients
-router.get("/deleted", getDeletedPatients);
 
 module.exports = router;
