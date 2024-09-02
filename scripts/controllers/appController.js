@@ -1,4 +1,4 @@
-const appService = require("../services/appService.js");
+const entityService = require("../services/entityService.js");
 
 const {
   GET_ENTITY_ERROR,
@@ -19,7 +19,7 @@ const {
 exports.createApp = async (req, res) => {
   try {
     // Create a new patient entry
-    const app = await appService.createApp(req.body);
+    const app = await entityService.createApp(req.body);
     res.status(CREATED).json({ message: "Appointment Added", app });
   } catch (error) {
     console.log(error);
@@ -30,7 +30,7 @@ exports.createApp = async (req, res) => {
 //GetAll patients.
 exports.getAllApp = async (req, res) => {
   try {
-    const allApp = await appService.getAllApp();
+    const allApp = await entityService.getAllApp();
     res.status(OK).json({ message: "Found", allApp });
 
     // Fetch all patients
@@ -50,7 +50,7 @@ exports.updateApp = async (req, res) => {
   let appId = req.params.appId;
   try {
     console.log(req.body);
-    const app = await appService.updateApp(appId, req.body);
+    const app = await entityService.updateApp(appId, req.body);
     if (!app) {
       res.status(NOT_FOUND).json({ Error: UPDATE_ENTITY_ERROR });
     }
@@ -67,7 +67,7 @@ exports.deleteAppById = async (req, res) => {
   let appId = req.params.appId;
 
   try {
-    const app = await appService.deleteDeptById(appId);
+    const app = await entityService.deleteDeptById(appId);
     if (app == null) {
       return res.status(NOT_FOUND).json({ message: DELETE_ENTITY_ERROR });
     }
@@ -81,7 +81,7 @@ exports.deleteAppById = async (req, res) => {
 exports.getAppById = async (req, res) => {
   let appId = req.params.appId;
   try {
-    const app = await appService.getAppById(appId);
+    const app = await entityService.getAppById(appId);
     if (app == null) {
       return res.status(NOT_FOUND).json({ message: ENTITY_NOT_FOUND });
     }
@@ -94,7 +94,7 @@ exports.getAppById = async (req, res) => {
 //Find deleted patients
 exports.getDeletedApp = async (req, res) => {
   try {
-    const deletedApp = await appService.getDeletedApp();
+    const deletedApp = await entityService.getDeletedApp();
     if (!deletedApp.length) {
       return res.status(NOT_FOUND).json({ message: ENTITY_NOT_FOUND });
     }

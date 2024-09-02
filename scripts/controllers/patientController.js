@@ -1,4 +1,4 @@
-const patientService = require("../services/patientService.js");
+const genericService = require("../services/userService.js");
 
 const {
   CREATE_USER_ERROR,
@@ -19,7 +19,7 @@ const {
 exports.createPatient = async (req, res) => {
   try {
     // Create a new patient entry
-    const patient = await patientService.createPatient(req.body);
+    const patient = await genericService.createPatient(req.body);
     res.status(CREATED).json({ message: "Patient Added", patient });
   } catch (error) {
     console.log(error);
@@ -30,14 +30,12 @@ exports.createPatient = async (req, res) => {
 //GetAll patients.
 exports.getAllPatients = async (req, res) => {
   try {
-    const allPatients = await patientService.getAllPatients();
-    res.status(OK).json({ message: "Found", allPatients });
+    const allPatients = await genericService.getAllPatients();
+    res.status(OK).json({ message: "Found", data: allPatients });
 
-    // Fetch all patients
-
-    if (!allPatients.length) {
-      return res.status(NOT_FOUND).json({ error: GET_USER_ERROR });
-    }
+    // if (!allPatients.length) {
+    //   return res.status(NOT_FOUND).json({ error: GET_USER_ERROR });
+    // }
   } catch (error) {
     console.log(error);
     res.status(SERVER_ERROR).json({ error: GET_USER_ERROR });
@@ -50,10 +48,7 @@ exports.updatePatient = async (req, res) => {
   let patientId = req.params.patientId;
   try {
     console.log(req.body);
-    const patient = await patientService.updatePatient(patientId, req.body);
-    if (!patient) {
-      res.status(NOT_FOUND).json({ Error: UPDATE_USER_ERROR });
-    }
+    const patient = await genericService.updatePatient(patientId, req.body);
     return res
       .status(CREATED)
       .json({ message: "Updated Successfuly", patient });
@@ -69,10 +64,11 @@ exports.deletePatient = async (req, res) => {
   let patientId = req.params.patientId;
 
   try {
-    const patient = await patientService.deletePatientById(patientId);
-    if (patient == null) {
-      return res.status(NOT_FOUND).json({ message: DELETE_USER_ERROR });
-    }
+    const patient = await genericService.deletePatientById(patientId);
+    console.log("patient : ", patient);
+    // if (patient == null) {
+    //   return res.status(NOT_FOUND).json({ message: DELETE_USER_ERROR });
+    // }
     return res.status(OK).json({ message: "Deleted Successfuly" });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: DELETE_USER_ERROR });
@@ -84,7 +80,7 @@ exports.findPatientById = async (req, res) => {
   let patientId = req.params.patientId;
   console.log("patientId : ", patientId);
   try {
-    const patient = await patientService.getPatientById(patientId);
+    const patient = await genericService.getPatientById(patientId);
     if (patient == null) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
@@ -97,7 +93,7 @@ exports.findPatientById = async (req, res) => {
 //Find deleted patients
 exports.getDeletedPatients = async (req, res) => {
   try {
-    const deletedPatients = await patientService.getDeletedPatients();
+    const deletedPatients = await genericService.getDeletedPatients();
     if (!deletedPatients.length) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
@@ -106,6 +102,15 @@ exports.getDeletedPatients = async (req, res) => {
   }
 };
 
+exports.filterPatient = async (req, res) => {
+  try {
+    const query = req.query;
+    const filteredPatients = await genericService.filterPatients(query);
+    console.log("filteredPatients : ", filteredPatients);
+  } catch (error) {
+    res.status(SERVER_ERROR).json({ message: INTERNAL_SERVER_ERROR });
+  }
+};
 /*
 This logic is for refrence of how to use deletedAt field in industry level.
 

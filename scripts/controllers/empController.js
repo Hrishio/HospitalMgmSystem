@@ -1,4 +1,4 @@
-const employeeService = require("../services/employeeService.js");
+const userService = require("../services/userService.js");
 
 const {
   CREATE_USER_ERROR,
@@ -20,7 +20,7 @@ exports.createEmployee = async (req, res) => {
   try {
     // Create a new patient entry
     console.log("body : ", req.body);
-    const employee = await employeeService.createEmployee(req.body);
+    const employee = await userService.createEmployee(req.body);
     res.status(CREATED).json({ message: "Employee Added", employee });
   } catch (error) {
     console.log(error);
@@ -31,7 +31,7 @@ exports.createEmployee = async (req, res) => {
 //GetAll patients.
 exports.getAllEmployees = async (req, res) => {
   try {
-    const allEmp = await employeeService.getAllEmployee();
+    const allEmp = await userService.getAllEmployee();
     res.status(OK).json({ message: "Found", allEmp });
 
     // Fetch all patients
@@ -51,7 +51,7 @@ exports.updateEmployee = async (req, res) => {
   let empId = req.params.empId;
   try {
     console.log(req.body);
-    const employee = await employeeService.updateEmployee(empId, req.body);
+    const employee = await userService.updateEmployee(empId, req.body);
     if (!employee) {
       res.status(NOT_FOUND).json({ Error: UPDATE_USER_ERROR });
     }
@@ -70,7 +70,7 @@ exports.deleteEmpById = async (req, res) => {
   let empId = req.params.empId;
 
   try {
-    const employee = await employeeService.deleteEmpById(empId);
+    const employee = await userService.deleteEmpById(empId);
     if (employee == null) {
       return res.status(NOT_FOUND).json({ message: DELETE_USER_ERROR });
     }
@@ -85,7 +85,7 @@ exports.getEmpById = async (req, res) => {
   let empId = req.params.empId;
   console.log("patientId : ", empId);
   try {
-    const employee = await employeeService.getEmpById(empId);
+    const employee = await userService.getEmpById(empId);
     if (employee == null) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
@@ -98,7 +98,7 @@ exports.getEmpById = async (req, res) => {
 //Find deleted patients
 exports.getDeletedEmp = async (req, res) => {
   try {
-    const deletedEmp = await employeeService.getDeletedEmp();
+    const deletedEmp = await userService.getDeletedEmp();
     if (!deletedEmp.length) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }

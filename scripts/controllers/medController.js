@@ -8,7 +8,7 @@
   getDeletedMed,
 }
 */
-const medService = require("../services/medService.js");
+const entityService = require("../services/entityService.js");
 
 const {
   GET_ENTITY_ERROR,
@@ -29,7 +29,7 @@ const {
 exports.createMed = async (req, res) => {
   try {
     // Create a new patient entry
-    const med = await medService.createMed(req.body);
+    const med = await entityService.createMed(req.body);
     res.status(CREATED).json({ message: "Medicine Added", med });
   } catch (error) {
     console.log(error);
@@ -40,7 +40,7 @@ exports.createMed = async (req, res) => {
 //GetAll patients.
 exports.getAllMed = async (req, res) => {
   try {
-    const allMed = await medService.getAllMed();
+    const allMed = await entityService.getAllMed();
     res.status(OK).json({ message: "Found", allMed });
 
     // Fetch all patients
@@ -60,7 +60,7 @@ exports.updateMed = async (req, res) => {
   let medId = req.params.medId;
   try {
     console.log(req.body);
-    const med = await medService.updateMed(medId, req.body);
+    const med = await entityService.updateMed(medId, req.body);
     if (!med) {
       res.status(NOT_FOUND).json({ Error: UPDATE_ENTITY_ERROR });
     }
@@ -77,7 +77,7 @@ exports.deleteMedById = async (req, res) => {
   let medId = req.params.medId;
 
   try {
-    const med = await medService.deleteMedById(medId);
+    const med = await entityService.deleteMedById(medId);
     if (med == null) {
       return res.status(NOT_FOUND).json({ message: DELETE_ENTITY_ERROR });
     }
@@ -92,7 +92,7 @@ exports.getMedById = async (req, res) => {
   let medId = req.params.medId;
   //   console.log("patientId : ", deptId);
   try {
-    const med = await medService.getMedById(medId);
+    const med = await entityService.getMedById(medId);
     if (med == null) {
       return res.status(NOT_FOUND).json({ message: ENTITY_NOT_FOUND });
     }
@@ -105,7 +105,7 @@ exports.getMedById = async (req, res) => {
 //Find deleted patients
 exports.getDeletedMed = async (req, res) => {
   try {
-    const deletedMed = await medService.getDeletedMed();
+    const deletedMed = await entityService.getDeletedMed();
     if (!deletedMed.length) {
       return res.status(NOT_FOUND).json({ message: ENTITY_NOT_FOUND });
     }

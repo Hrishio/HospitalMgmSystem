@@ -6,6 +6,7 @@ const {
   deletePatient,
   findPatientById,
   getDeletedPatients,
+  filterPatient,
 } = require("../controllers/patientController.js");
 
 const router = express.Router();
@@ -24,5 +25,7 @@ router
   .get("/:patientId", findPatientById)
   .put("/:patientId", updatePatient)
   .delete("/:patientId", deletePatient);
+
+router.get("/", filterPatient);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-const deptService = require("../services/deptService.js");
+const entityService = require("../services/entityService.js");
 
 const {
   GET_ENTITY_ERROR,
@@ -19,7 +19,7 @@ const {
 exports.createDept = async (req, res) => {
   try {
     // Create a new patient entry
-    const dept = await deptService.createDept(req.body);
+    const dept = await entityService.createDept(req.body);
     res.status(CREATED).json({ message: "Department Added", dept });
   } catch (error) {
     console.log(error);
@@ -30,7 +30,7 @@ exports.createDept = async (req, res) => {
 //GetAll patients.
 exports.getAllDept = async (req, res) => {
   try {
-    const allDept = await deptService.getAllDept();
+    const allDept = await entityService.getAllDept();
     res.status(OK).json({ message: "Found", allDept });
 
     // Fetch all patients
@@ -50,7 +50,7 @@ exports.updateDept = async (req, res) => {
   let deptId = req.params.deptId;
   try {
     console.log(req.body);
-    const dept = await deptService.updateDept(deptId, req.body);
+    const dept = await entityService.updateDept(deptId, req.body);
     if (!dept) {
       res.status(NOT_FOUND).json({ Error: UPDATE_ENTITY_ERROR });
     }
@@ -67,7 +67,7 @@ exports.deleteDeptById = async (req, res) => {
   let deptId = req.params.deptId;
 
   try {
-    const dept = await deptService.deleteDeptById(deptId);
+    const dept = await entityService.deleteDeptById(deptId);
     if (dept == null) {
       return res.status(NOT_FOUND).json({ message: DELETE_ENTITY_ERROR });
     }
@@ -82,7 +82,7 @@ exports.getDeptById = async (req, res) => {
   let deptId = req.params.deptId;
   //   console.log("patientId : ", deptId);
   try {
-    const dept = await deptService.getDeptById(deptId);
+    const dept = await entityService.getDeptById(deptId);
     if (dept == null) {
       return res.status(NOT_FOUND).json({ message: ENTITY_NOT_FOUND });
     }
@@ -95,7 +95,7 @@ exports.getDeptById = async (req, res) => {
 //Find deleted patients
 exports.getDeletedDept = async (req, res) => {
   try {
-    const getDeletedDept = await deptService.getDeletedDept();
+    const getDeletedDept = await entityService.getDeletedDept();
     if (!getDeletedDept.length) {
       return res.status(NOT_FOUND).json({ message: ENTITY_NOT_FOUND });
     }
