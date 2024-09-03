@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, or } = require("sequelize");
 
 const createEntity = async (Model, dto) => {
   const entity = await Model.create(dto);
@@ -41,6 +41,11 @@ const getDeletedEntities = async (Model) => {
   return entities;
 };
 
+const filterEntities = async (Model, filters) => {
+  const entities = Model.findAll({ where: filters });
+  return entities;
+};
+
 module.exports = {
   createEntity,
   getAllEntities,
@@ -48,4 +53,5 @@ module.exports = {
   updateEntity,
   deleteEntity,
   getDeletedEntities,
+  filterEntities,
 };

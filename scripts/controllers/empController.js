@@ -1,5 +1,4 @@
 const userService = require("../services/userService.js");
-
 const {
   CREATE_USER_ERROR,
   GET_USER_ERROR,
@@ -14,8 +13,11 @@ const {
   OK,
   NOT_FOUND,
 } = require("../constants/statusCodes.js");
+const { connection, getSchemaModel } = require("../../database.js");
 
-//Create new patient:
+const { filterEmps } = require("../services/userService.js");
+
+//Create new Employees:
 exports.createEmployee = async (req, res) => {
   try {
     // Create a new patient entry
@@ -28,24 +30,80 @@ exports.createEmployee = async (req, res) => {
   }
 };
 
-//GetAll patients.
-exports.getAllEmployees = async (req, res) => {
+//Filter Employees.
+exports.filterEmployees = async (req, res) => {
+  const SchemaModel = getSchemaModel();
   try {
-    const allEmp = await userService.getAllEmployee();
-    res.status(OK).json({ message: "Found", allEmp });
+    // Extract query parameters from the request
+    const {
+      page = 1,
+      limit = 10,
+      where = "{}", // Default to empty object if not provided
+      sortBy = "empId", // Default to 'empId' if not provided
+      sortOrder = "asc",
+    } = req.query;
 
-    // Fetch all patients
+    // Parse `where` from JSON string
+    const whereConditions = JSON.parse(where);
 
-    if (!allEmp.length) {
-      return res.status(NOT_FOUND).json({ error: GET_USER_ERROR });
+    // Parse page and limit to integers
+    const pageNumber = parseInt(page, 10);
+    const pageSize = parseInt(limit, 10);
+
+    // Ensure pageNumber and pageSize are valid
+    if (
+      isNaN(pageNumber) ||
+      isNaN(pageSize) ||
+      pageNumber < 1 ||
+      pageSize < 1
+    ) {
+      return res.status(400).json({ message: "Invalid page or limit" });
     }
+
+    // Calculate offset
+    const offset = (pageNumber - 1) * pageSize;
+
+    // Prepare filter parameters
+    const filters = {
+      where: whereConditions,
+      limit: pageSize,
+      offset: offset,
+      order: [[sortBy, sortOrder]],
+    };
+
+    // Fetch employees using the filter parameters from the service
+    const employees = await filterEmps(filters);
+
+    // Total count of employees
+    const totalEmployees = await SchemaModel.Employee.count({
+      where: whereConditions,
+    });
+
+    // Check if employees were found and respond accordingly
+    if (employees.length === 0) {
+      return res.status(404).json({ message: "No employees found" });
+    }
+
+    const totalPages = Math.ceil(totalEmployees / pageSize);
+    const nextPage = pageNumber < totalPages ? pageNumber + 1 : null;
+    const prevPage = pageNumber > 1 ? pageNumber - 1 : null;
+
+    res.status(200).json({
+      message: "Employees retrieved successfully",
+      currentPage: pageNumber,
+      totalPages,
+      totalEmployees,
+      nextPage,
+      prevPage,
+      data: employees,
+    });
   } catch (error) {
-    console.log(error);
-    res.status(SERVER_ERROR).json({ error: GET_USER_ERROR });
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-//Get [patient by ID]:
+//Get [Employees by ID]:
 
 exports.updateEmployee = async (req, res) => {
   let empId = req.params.empId;
@@ -64,7 +122,7 @@ exports.updateEmployee = async (req, res) => {
   }
 };
 
-//Delete Patient:
+//Delete Employees:
 
 exports.deleteEmpById = async (req, res) => {
   let empId = req.params.empId;
@@ -80,7 +138,7 @@ exports.deleteEmpById = async (req, res) => {
   }
 };
 
-//Find Patient by ID:
+//Find Employees by ID:
 exports.getEmpById = async (req, res) => {
   let empId = req.params.empId;
   console.log("patientId : ", empId);
@@ -95,7 +153,7 @@ exports.getEmpById = async (req, res) => {
   }
 };
 
-//Find deleted patients
+//Find deleted Employees
 exports.getDeletedEmp = async (req, res) => {
   try {
     const deletedEmp = await userService.getDeletedEmp();
@@ -107,31 +165,13 @@ exports.getDeletedEmp = async (req, res) => {
   }
 };
 
-/*
-This logic is for refrence of how to use deletedAt field in industry level.
-
-    const foundPatient = SchemaModel.Patients.findOne({
-      where: { deletedAt: !null },
-    });
-    if (foundPatient == 0) {
-     const foundPatient = SchemaModel.Patients.findOne({
-      where: { deletedAt: !null },
-    });
-    if (foundPatient == 0) {
-      const patient = await SchemaModel.Patients.create({
-        first_name,
-        last_name,
-        gender,
-        address,
-        email,
-        dob,
-        phone_number,
-        employee_id,
-        createdBy,
-        updatedBy,
-      });
-
-    } else {
-      res.status(404).json({ message: "already Deleted" });
-    }
-*/
+//Get All Employees.
+exports.getAllEmployees = async (req, res) => {
+  const SchemaModel = getSchemaModel();
+  try {
+    const employee = await SchemaModel.Employee.findAll();
+    return res.status(OK).json({ message: "Found", employee });
+  } catch (err) {
+    res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
+  }
+};

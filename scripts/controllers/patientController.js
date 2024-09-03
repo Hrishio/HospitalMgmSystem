@@ -1,4 +1,4 @@
-const genericService = require("../services/userService.js");
+const userService = require("../services/userService.js");
 
 const {
   CREATE_USER_ERROR,
@@ -14,6 +14,7 @@ const {
   OK,
   NOT_FOUND,
 } = require("../constants/statusCodes.js");
+const { getSchemaModel } = require("../../database.js");
 
 //Create new patient:
 exports.createPatient = async (req, res) => {
@@ -30,12 +31,16 @@ exports.createPatient = async (req, res) => {
 //GetAll patients.
 exports.getAllPatients = async (req, res) => {
   try {
-    const allPatients = await genericService.getAllPatients();
-    res.status(OK).json({ message: "Found", data: allPatients });
+    const filterParams = req.query; // Extract filter parameters from query
+    const allPatients = filterParams
+      ? await userService.filterPatients(filterParams) // Use filter method if parameters are provided
+      : await userService.getAllPatients(); // Otherwise, get all patients
 
-    // if (!allPatients.length) {
-    //   return res.status(NOT_FOUND).json({ error: GET_USER_ERROR });
-    // }
+    if (!allPatients.length) {
+      return res.status(NOT_FOUND).json({ error: GET_USER_ERROR });
+    }
+
+    res.status(OK).json({ message: "Found", data: allPatients });
   } catch (error) {
     console.log(error);
     res.status(SERVER_ERROR).json({ error: GET_USER_ERROR });
@@ -102,15 +107,6 @@ exports.getDeletedPatients = async (req, res) => {
   }
 };
 
-exports.filterPatient = async (req, res) => {
-  try {
-    const query = req.query;
-    const filteredPatients = await genericService.filterPatients(query);
-    console.log("filteredPatients : ", filteredPatients);
-  } catch (error) {
-    res.status(SERVER_ERROR).json({ message: INTERNAL_SERVER_ERROR });
-  }
-};
 /*
 This logic is for refrence of how to use deletedAt field in industry level.
 

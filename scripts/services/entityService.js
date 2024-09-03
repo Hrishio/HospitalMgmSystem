@@ -5,6 +5,7 @@ const {
   updateEntity,
   deleteEntity,
   getDeletedEntities,
+  filterEntities,
 } = require("./genericService.js");
 
 const MedDTO = require("../dtos/med.dto.js");
@@ -96,6 +97,21 @@ const getDeletedApp = async () => {
   getDeletedEntities(SchemaModel.Appointment);
 };
 
+const filterMeds = async (filters) => {
+  const SchemaModel = getSchemaModel();
+  return filterEntities(SchemaModel.Medicines, filters);
+};
+
+const filterDepts = async (filters) => {
+  const SchemaModel = getSchemaModel();
+  return filterEntities(SchemaModel.Department, filters);
+};
+
+const filterApps = async (filters) => {
+  const SchemaModel = getSchemaModel();
+  return filterEntities(SchemaModel.Appointment, filters);
+};
+
 module.exports = {
   createMed,
   createDept,
@@ -115,4 +131,7 @@ module.exports = {
   getDeletedMed,
   getDeletedDept,
   getDeletedApp,
+  filterMeds,
+  filterDepts,
+  filterApps,
 };

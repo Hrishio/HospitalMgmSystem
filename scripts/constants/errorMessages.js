@@ -1,10 +1,10 @@
 module.exports = {
   CREATE_USER_ERROR:
-    "Failed To create patient, please check your request and try again later.",
-  GET_USER_ERROR: "Failed to get patients, please try again later.",
-  UPDATE_USER_ERROR: "Failed to update patient, please try again later.",
-  DELETE_USER_ERROR: "Failed to delete patient, please try again",
-  USER_NOT_FOUND: "Patient not found, please check params carefully!!",
+    "Failed To create user, please check your request and try again later.",
+  GET_USER_ERROR: "Failed to get user, please try again later.",
+  UPDATE_USER_ERROR: "Failed to update user, please try again later.",
+  DELETE_USER_ERROR: "Failed to delete user, please try again",
+  USER_NOT_FOUND: "User not found, please check params carefully!!",
   INTERNAL_SERVER_ERROR: "Internal Server Error",
   CREATE_ENTITY_ERROR:
     "Failed to create Entity please check your request and try again.",

@@ -9,10 +9,31 @@ const {
   filterPatient,
 } = require("../controllers/patientController.js");
 
+const {
+  paginationMiddleware,
+  searchMiddleware,
+  sortMiddleware,
+} = require("../middlewares/index.js");
+
 const router = express.Router();
 
 //Get all Patients
-router.get("/", getAllPatients);
+router.get(
+  "/",
+  paginationMiddleware,
+  searchMiddleware,
+  sortMiddleware,
+  getAllPatients
+);
+
+//Filtering
+// router.get(
+//   "/",
+//   paginationMiddleware,
+//   searchMiddleware,
+//   sortMiddleware,
+//   filterPatient
+// );
 
 //Create Patient.
 router.post("/new", createPatient);
@@ -26,6 +47,6 @@ router
   .put("/:patientId", updatePatient)
   .delete("/:patientId", deletePatient);
 
-router.get("/", filterPatient);
+// router.get("/", filterPatient);
 
 module.exports = router;

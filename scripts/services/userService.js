@@ -5,6 +5,7 @@ const {
   updateEntity,
   deleteEntity,
   getDeletedEntities,
+  filterEntities,
 } = require("./genericService.js");
 
 const PatientDTO = require("../dtos/patient.dto.js");
@@ -70,6 +71,61 @@ const getDeletedEmployees = async () => {
   getDeletedEntities(SchemaModel.Employee);
 };
 
+const filterPatients = async (filters) => {
+  const SchemaModel = getSchemaModel();
+  return filterEntities(SchemaModel.Patients, filters);
+};
+
+const filterEmps = async ({
+  where = {},
+  limit = 10,
+  offset = 0,
+  order = [],
+}) => {
+  const SchemaModel = getSchemaModel();
+
+  // Validate parameters
+  if (
+    typeof limit !== "number" ||
+    limit <= 0 ||
+    typeof offset !== "number" ||
+    offset < 0
+  ) {
+    throw new Error("Invalid limit or offset values.");
+  }
+
+  // Check if sortBy is a valid column in the model
+  const validSortColumns = [
+    "empId",
+    "first_name",
+    "last_name",
+    "gender",
+    "address",
+    "email",
+    "dob",
+    "phone_number",
+    "patientId",
+    "deletedAt",
+    "createdBy",
+    "updatedBy",
+    "createdAt",
+    "updatedAt",
+    "deptId",
+  ];
+  const sortColumn = order[0] ? order[0][0] : "empId";
+
+  if (!validSortColumns.includes(sortColumn)) {
+    throw new Error(`Invalid sort column: ${sortColumn}`);
+  }
+
+  return SchemaModel.Employee.findAll({
+    where,
+    limit,
+    offset,
+    order,
+  });
+};
+
 module.exports = {
   createPatient,
   createEmployee,
@@ -83,4 +139,6 @@ module.exports = {
   deleteEmployeeById,
   getDeletedPatients,
   getDeletedEmployees,
+  filterPatients,
+  filterEmps,
 };
