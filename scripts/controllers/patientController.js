@@ -20,7 +20,7 @@ const { getSchemaModel } = require("../../database.js");
 exports.createPatient = async (req, res) => {
   try {
     // Create a new patient entry
-    const patient = await genericService.createPatient(req.body);
+    const patient = await userService.createPatient(req.body);
     res.status(CREATED).json({ message: "Patient Added", patient });
   } catch (error) {
     console.log(error);
@@ -53,7 +53,7 @@ exports.updatePatient = async (req, res) => {
   let patientId = req.params.patientId;
   try {
     console.log(req.body);
-    const patient = await genericService.updatePatient(patientId, req.body);
+    const patient = await userService.updatePatient(patientId, req.body);
     return res
       .status(CREATED)
       .json({ message: "Updated Successfuly", patient });
@@ -85,7 +85,7 @@ exports.findPatientById = async (req, res) => {
   let patientId = req.params.patientId;
   console.log("patientId : ", patientId);
   try {
-    const patient = await genericService.getPatientById(patientId);
+    const patient = await userService.getPatientById(patientId);
     if (patient == null) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
@@ -98,7 +98,7 @@ exports.findPatientById = async (req, res) => {
 //Find deleted patients
 exports.getDeletedPatients = async (req, res) => {
   try {
-    const deletedPatients = await genericService.getDeletedPatients();
+    const deletedPatients = await userService.getDeletedPatients();
     if (!deletedPatients.length) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
