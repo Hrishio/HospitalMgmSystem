@@ -1,11 +1,14 @@
 const userService = require("../services/userService.js");
 const {
   CREATE_USER_ERROR,
-  GET_USER_ERROR,
   UPDATE_USER_ERROR,
   DELETE_USER_ERROR,
   USER_NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  UPDATED,
+  DELETED,
+  FOUND,
+  CREATED,
 } = require("../constants/errorMessages.js");
 const {
   SERVER_ERROR,

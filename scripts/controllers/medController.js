@@ -17,6 +17,10 @@ const {
   UPDATE_ENTITY_ERROR,
   CREATE_ENTITY_ERROR,
   INTERNAL_SERVER_ERROR,
+  UPDATED,
+  DELETED,
+  FOUND,
+  CREATEDM,
 } = require("../constants/errorMessages.js");
 const {
   SERVER_ERROR,
@@ -30,7 +34,7 @@ exports.createMed = async (req, res) => {
   try {
     // Create a new patient entry
     const med = await entityService.createMed(req.body);
-    res.status(CREATED).json({ message: "Medicine Added", med });
+    res.status(CREATED).json({ message: CREATEDM, med });
   } catch (error) {
     console.log(error);
     res.status(SERVER_ERROR).json({ error: CREATE_ENTITY_ERROR });
@@ -41,7 +45,7 @@ exports.createMed = async (req, res) => {
 exports.getAllMed = async (req, res) => {
   try {
     const allMed = await entityService.getAllMed();
-    res.status(OK).json({ message: "Found", allMed });
+    res.status(OK).json({ message: FOUND, allMed });
 
     // Fetch all patients
 
@@ -64,7 +68,7 @@ exports.updateMed = async (req, res) => {
     if (!med) {
       res.status(NOT_FOUND).json({ Error: UPDATE_ENTITY_ERROR });
     }
-    return res.status(CREATED).json({ message: "Updated Successfuly", med });
+    return res.status(CREATED).json({ message: UPDATED, med });
   } catch (error) {
     console.log("Error : ", error);
     res.status(SERVER_ERROR).json({ Error: UPDATE_ENTITY_ERROR });
@@ -81,7 +85,7 @@ exports.deleteMedById = async (req, res) => {
     if (med == null) {
       return res.status(NOT_FOUND).json({ message: DELETE_ENTITY_ERROR });
     }
-    return res.status(OK).json({ message: "Deleted Successfuly" });
+    return res.status(OK).json({ message: DELETED });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: DELETE_ENTITY_ERROR });
   }
@@ -96,7 +100,7 @@ exports.getMedById = async (req, res) => {
     if (med == null) {
       return res.status(NOT_FOUND).json({ message: ENTITY_NOT_FOUND });
     }
-    return res.status(OK).json({ message: "Found Department", med });
+    return res.status(OK).json({ message: FOUND, med });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: ENTITY_NOT_FOUND });
   }

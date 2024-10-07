@@ -12,4 +12,8 @@ module.exports = {
   DELETE_ENTITY_ERROR: "Failed to delete Entity.",
   ENTITY_NOT_FOUND: "Failed to find the mentioned Entity.",
   UPDATE_ENTITY_ERROR: "Failed to update requested Entity.",
+  CREATEDM : 'Created',
+  UPDATED : 'Updated',
+  FOUND : 'Found',
+  DELETED : 'Deleted'
 };

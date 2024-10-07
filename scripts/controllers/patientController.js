@@ -7,6 +7,10 @@ const {
   DELETE_USER_ERROR,
   USER_NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  CREATEDM,
+  UPDATED,
+  FOUND,
+  DELETED
 } = require("../constants/errorMessages.js");
 const {
   SERVER_ERROR,
@@ -21,7 +25,7 @@ exports.createPatient = async (req, res) => {
   try {
     // Create a new patient entry
     const patient = await userService.createPatient(req.body);
-    res.status(CREATED).json({ message: "Patient Added", patient });
+    res.status(CREATED).json({ message: CREATEDM, patient });
   } catch (error) {
     console.log(error);
     res.status(SERVER_ERROR).json({ error: CREATE_USER_ERROR });
@@ -40,7 +44,7 @@ exports.getAllPatients = async (req, res) => {
       return res.status(NOT_FOUND).json({ error: GET_USER_ERROR });
     }
 
-    res.status(OK).json({ message: "Found", data: allPatients });
+    res.status(OK).json({ message: FOUND, data: allPatients });
   } catch (error) {
     console.log(error);
     res.status(SERVER_ERROR).json({ error: GET_USER_ERROR });
@@ -56,9 +60,8 @@ exports.updatePatient = async (req, res) => {
     const patient = await userService.updatePatient(patientId, req.body);
     return res
       .status(CREATED)
-      .json({ message: "Updated Successfuly", patient });
+      .json({ message: OK, patient });
   } catch (error) {
-    console.log("Error : ", error);
     res.status(SERVER_ERROR).json({ Error: UPDATE_USER_ERROR });
   }
 };
@@ -74,7 +77,7 @@ exports.deletePatient = async (req, res) => {
     // if (patient == null) {
     //   return res.status(NOT_FOUND).json({ message: DELETE_USER_ERROR });
     // }
-    return res.status(OK).json({ message: "Deleted Successfuly" });
+    return res.status(OK).json({ message: DELETED });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: DELETE_USER_ERROR });
   }
@@ -89,7 +92,7 @@ exports.findPatientById = async (req, res) => {
     if (patient == null) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
-    return res.status(OK).json({ message: "Found Patient", patient });
+    return res.status(OK).json({ message: FOUND, patient });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: USER_NOT_FOUND });
   }

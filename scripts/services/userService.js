@@ -8,6 +8,16 @@ const {
   filterEntities,
 } = require("./genericService.js");
 
+const {
+  CREATE_USER_ERROR,
+  GET_USER_ERROR,
+  UPDATE_USER_ERROR,
+  DELETE_USER_ERROR,
+  USER_NOT_FOUND,
+  INTERNAL_SERVER_ERROR,
+} = require("../constants/errorMessages.js");
+const { SERVER_ERROR, OK, CREATED, NOT_FOUND } = require('../constants/statusCodes.js')
+
 const PatientDTO = require("../dtos/patient.dto.js");
 const EmployeeDTO = require("../dtos/emp.dto.js");
 
@@ -91,7 +101,7 @@ const filterEmps = async ({
     typeof offset !== "number" ||
     offset < 0
   ) {
-    throw new Error("Invalid limit or offset values.");
+    throw new Error(USER_NOT_FOUND);
   }
 
   // Check if sortBy is a valid column in the model
