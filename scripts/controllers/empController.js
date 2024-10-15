@@ -8,7 +8,7 @@ const {
   UPDATED,
   DELETED,
   FOUND,
-  CREATED,
+  CREATEDM,
 } = require("../constants/errorMessages.js");
 const {
   SERVER_ERROR,
@@ -26,7 +26,7 @@ exports.createEmployee = async (req, res) => {
     // Create a new patient entry
     console.log("body : ", req.body);
     const employee = await userService.createEmployee(req.body);
-    res.status(CREATED).json({ message: "Employee Added", employee });
+    res.status(CREATED).json({ message: CREATEDM, employee });
   } catch (error) {
     console.log(error);
     res.status(SERVER_ERROR).json({ error: CREATE_USER_ERROR });
@@ -37,12 +37,11 @@ exports.createEmployee = async (req, res) => {
 exports.filterEmployees = async (req, res) => {
   const SchemaModel = getSchemaModel();
   try {
-    // Extract query parameters from the request
     const {
       page = 1,
       limit = 10,
-      where = "{}", // Default to empty object if not provided
-      sortBy = "empId", // Default to 'empId' if not provided
+      where = "{}", 
+      sortBy = "empId", 
       sortOrder = "asc",
     } = req.query;
 
@@ -60,7 +59,7 @@ exports.filterEmployees = async (req, res) => {
       pageNumber < 1 ||
       pageSize < 1
     ) {
-      return res.status(400).json({ message: "Invalid page or limit" });
+      return res.status(400).json({ message: NOT_FOUND });
     }
 
     // Calculate offset
@@ -84,7 +83,7 @@ exports.filterEmployees = async (req, res) => {
 
     // Check if employees were found and respond accordingly
     if (employees.length === 0) {
-      return res.status(404).json({ message: "No employees found" });
+      return res.status(404).json({ message: NOT_FOUND});
     }
 
     const totalPages = Math.ceil(totalEmployees / pageSize);
@@ -92,7 +91,7 @@ exports.filterEmployees = async (req, res) => {
     const prevPage = pageNumber > 1 ? pageNumber - 1 : null;
 
     res.status(200).json({
-      message: "Employees retrieved successfully",
+      message: FOUND,
       currentPage: pageNumber,
       totalPages,
       totalEmployees,
@@ -102,7 +101,7 @@ exports.filterEmployees = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: INTERNAL_SERVER_ERROR});
   }
 };
 
@@ -118,7 +117,7 @@ exports.updateEmployee = async (req, res) => {
     }
     return res
       .status(CREATED)
-      .json({ message: "Updated Successfuly", employee });
+      .json({ message: UPDATED, employee });
   } catch (error) {
     console.log("Error : ", error);
     res.status(SERVER_ERROR).json({ Error: UPDATE_USER_ERROR });
@@ -135,7 +134,7 @@ exports.deleteEmpById = async (req, res) => {
     if (employee == null) {
       return res.status(NOT_FOUND).json({ message: DELETE_USER_ERROR });
     }
-    return res.status(OK).json({ message: "Deleted Successfuly" });
+    return res.status(OK).json({ message: DELETED });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: DELETE_USER_ERROR });
   }
@@ -150,7 +149,7 @@ exports.getEmpById = async (req, res) => {
     if (employee == null) {
       return res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
     }
-    return res.status(OK).json({ message: "Found Patient", employee });
+    return res.status(OK).json({ message: FOUND, employee });
   } catch (error) {
     res.status(SERVER_ERROR).json({ message: USER_NOT_FOUND });
   }
@@ -173,7 +172,7 @@ exports.getAllEmployees = async (req, res) => {
   const SchemaModel = getSchemaModel();
   try {
     const employee = await SchemaModel.Employee.findAll();
-    return res.status(OK).json({ message: "Found", employee });
+    return res.status(OK).json({ message: FOUND, employee });
   } catch (err) {
     res.status(NOT_FOUND).json({ message: USER_NOT_FOUND });
   }

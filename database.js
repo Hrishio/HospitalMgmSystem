@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 const { createPatientModel } = require("./scripts/models/models.js");
 let SchemaModel = null;
 
-const sequelize = new Sequelize("hospitalMgmSystem", "postgres", "hrishio", {
+const sequelize = new Sequelize("hospitalMgmSystem", "postgres", "passwd", {
   host: "localhost",
   dialect: "postgres",
 });
