@@ -107,32 +107,3 @@ exports.getDeletedDept = async (req, res) => {
     res.status(SERVER_ERROR).json({ message: INTERNAL_SERVER_ERROR });
   }
 };
-
-/*
-This logic is for refrence of how to use deletedAt field in industry level.
-
-    const foundPatient = SchemaModel.Patients.findOne({
-      where: { deletedAt: !null },
-    });
-    if (foundPatient == 0) {
-     const foundPatient = SchemaModel.Patients.findOne({
-      where: { deletedAt: !null },
-    });
-    if (foundPatient == 0) {
-      const patient = await SchemaModel.Patients.create({
-        first_name,
-        last_name,
-        gender,
-        address,
-        email,
-        dob,
-        phone_number,
-        employee_id,
-        createdBy,
-        updatedBy,
-      });
-
-    } else {
-      res.status(404).json({ message: "already Deleted" });
-    }
-*/

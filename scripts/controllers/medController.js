@@ -1,13 +1,3 @@
-/*
-{
-  createMed,
-  getAllMed,
-  updateMed,
-  getMedById,
-  deleteMedById,
-  getDeletedMed,
-}
-*/
 const entityService = require("../services/entityService.js");
 
 const {
